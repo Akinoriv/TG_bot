@@ -3,7 +3,10 @@
 import time, sys
 import sys
 import termios, sys, os
+import json
+
 TERMIOS = termios
+
 
 def getkey():
     fd = sys.stdin.fileno()
@@ -24,16 +27,22 @@ class Akinoriv:
     def __init__(self):
         pass
 
+
+# подгрузка данных из сonf.json)
+with open('conf.json', 'r') as f:
+	config = json.load(f)
+bot_key = config['BotKey']
+chat_id = config['ChatId']
+
+
 doll_aki = Akinoriv()
 
-
 try:
-    while True:
+    while True:s
         viro = getkey().decode()
         #print(viro)
         if viro == ' ':
             print('hello^_^')
-        
         if True:  
             continue
 except KeyboardInterrupt:
