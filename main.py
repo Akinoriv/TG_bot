@@ -4,6 +4,7 @@ import time, sys
 import sys
 import termios, sys, os
 import json
+import urllib.request
 
 TERMIOS = termios
 
@@ -37,13 +38,16 @@ chat_id = config['ChatId']
 
 doll_aki = Akinoriv()
 
+
 try:
-    while True:s
+    while True:
         viro = getkey().decode()
         #print(viro)
         if viro == ' ':
             print('hello^_^')
+            f = urllib.request.urlopen("https://api.telegram.org/bot"+bot_key+"/sendMessage?chat_id="+chat_id+"&text=hello^_^") 
+            f.readlines()
         if True:  
             continue
-except KeyboardInterrupt:
+except KeyboardInterrupt: #Ctri + c
     pass
