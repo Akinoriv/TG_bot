@@ -1,33 +1,12 @@
 #!/usr/bin/env python3 
-
-import time, sys
-import sys
-import termios, sys, os
 import json
-import urllib.request
+import logging
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-TERMIOS = termios
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
 
-
-def getkey():
-    fd = sys.stdin.fileno()
-    old = termios.tcgetattr(fd)
-    new = termios.tcgetattr(fd)
-    new[3] = new[3] & ~TERMIOS.ICANON & ~TERMIOS.ECHO
-    new[6][TERMIOS.VMIN] = 1
-    new[6][TERMIOS.VTIME] = 0
-    termios.tcsetattr(fd, TERMIOS.TCSANOW, new)
-    c = None
-    try:
-        c = os.read(fd, 1)
-    finally:
-        termios.tcsetattr(fd, TERMIOS.TCSAFLUSH, old)
-    return c
-
-class Akinoriv:
-    def __init__(self):
-        pass
-
+logger = logging.getLogger(__name__)
 
 # подгрузка данных из сonf.json)
 with open('conf.json', 'r') as f:
@@ -36,18 +15,42 @@ bot_key = config['BotKey']
 chat_id = config['ChatId']
 
 
-doll_aki = Akinoriv()
+def start(bot, update):
+    update.message.reply_text('Hi!')
 
 
-try:
-    while True:
-        viro = getkey().decode()
-        #print(viro)
-        if viro == ' ':
-            print('hello^_^')
-            f = urllib.request.urlopen("https://api.telegram.org/bot"+bot_key+"/sendMessage?chat_id="+chat_id+"&text=hello^_^") 
-            f.readlines()
-        if True:  
-            continue
-except KeyboardInterrupt: #Ctri + c
-    pass
+def help(bot, update):
+    update.message.reply_text('Help!')
+
+
+def echo(bot, update):
+    update.message.reply_text(update.message.text)
+
+
+def error(bot, update, error):
+    logger.warning('Update "%s" caused error "%s"', update, error)
+
+
+def main():
+    updater = Updater(bot_key)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_error_handler(error)
+    updater.start_polling()
+    updater.idle()
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
+
+# подгрузка данных из сonf.json)
+
